@@ -34,7 +34,6 @@ module Admin
       raise NotSavedProductError
     end
 
-
     def save_record!(record)
       record.save!
     rescue ActiveRecord::RecordInvalid
