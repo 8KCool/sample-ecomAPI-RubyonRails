@@ -1,3 +1,4 @@
+
 require "rails_helper"
 
 RSpec.describe "Storefront V1 Home", type: :request do
@@ -10,10 +11,10 @@ RSpec.describe "Storefront V1 Home", type: :request do
         get url, headers: unauthenticated_header
         expect(body_json['products'].count).to eq 10
       end
-
+      
       it "returns Products with :productable following default pagination" do
         get url, headers: unauthenticated_header
-        expected_return = general_products[0..9].map do |product|
+        expected_return = general_products[0..9].map do |product| 
           build_game_product_json(product)
         end
         expect(body_json['products']).to eq expected_return
@@ -31,17 +32,17 @@ RSpec.describe "Storefront V1 Home", type: :request do
 
     context "with search param" do
       let!(:search_products) do
-        products = []
+        products = [] 
         3.times { |n| products << create(:product, name: "Search #{n + 1}") }
         3.times { |n| products << create(:product, description: "Some kind of search #{n + 1}") }
         3.times do |n|
           game = create(:game, developer: "Search #{n + 1}")
           products << create(:product, productable: game)
         end
-        products
+        products 
       end
 
-      let(:search_params) { { search: "Search" } }
+      let(:search_params) { { search: "Search" } } 
 
       it "returns only seached products limited by default pagination" do
         get url, headers: unauthenticated_header, params: search_params
@@ -203,16 +204,16 @@ RSpec.describe "Storefront V1 Home", type: :request do
     end
 
     context "with release_date filter" do
-      let!(:recently_released_products) do
+      let!(:recently_released_products) do 
         products = []
-        5.times do |n|
+        5.times do |n| 
           game = create(:game, release_date: (0..7).to_a.sample.days.ago)
           products << create(:product, productable: game)
         end
         products
       end
 
-      let!(:older_products) do
+      let!(:older_products) do 
         products = []
         5.times do |n| 
           game = create(:game, release_date: (8..14).to_a.sample.days.ago)
@@ -319,7 +320,7 @@ RSpec.describe "Storefront V1 Home", type: :request do
         get url, headers: unauthenticated_header, params: pagination_params
         expect(body_json['products'].count).to eq length
       end
-
+      
       it "returns products limited by pagination" do
         get url, headers: unauthenticated_header, params: pagination_params
         expected_return = general_products[5..9].map do |product|
@@ -339,49 +340,41 @@ RSpec.describe "Storefront V1 Home", type: :request do
     end
 
     context "with order params" do
-      context "by price" do
-        let(:order_params) { { order: { price: 'desc' } } }
+      let(:order_params) { { order: { name: 'desc' } } }
 
-        it "returns ordered products limited by default pagination" do
-          get url, headers: unauthenticated_header, params: order_params
-          general_products.sort! { |a, b| b[:price] <=> a[:price] }
-          expected_return = general_products[0..9].map do |product|
-            build_game_product_json(product)
-          end
-          expect(body_json['products']).to contain_exactly *expected_return
+      it "returns ordered products limited by default pagination" do
+        get url, headers: unauthenticated_header, params: order_params
+        general_products.sort! { |a, b| b[:name] <=> a[:name] }
+        expected_return = general_products[0..9].map do |product|
+          build_game_product_json(product)
         end
-
-        it "returns success status" do
-          get url, headers: unauthenticated_header, params: order_params
-          expect(response).to have_http_status(:ok)
-        end
-
-        it_behaves_like 'pagination meta attributes', { page: 1, length: 10, total: 15, total_pages: 2 } do
-          before { get url, headers: unauthenticated_header, params: order_params }
-        end
+        expect(body_json['products']).to contain_exactly *expected_return
+      end
+ 
+      it "returns success status" do
+        get url, headers: unauthenticated_header, params: order_params
+        expect(response).to have_http_status(:ok)
       end
 
-      context "by release date" do
-        let(:order_params) { { order: { release_date: 'desc' } } }
-
-        it "returns ordered products limited by default pagination" do
-          get url, headers: unauthenticated_header, params: order_params
-          general_products.sort! { |a, b| b[:release_date] <=> a[:release_date] }
-          expected_return = general_products[0..9].map do |product|
-            build_game_product_json(product)
-          end
-          expect(body_json['products']).to contain_exactly *expected_return
-        end
-
-        it "returns success status" do
-          get url, headers: unauthenticated_header, params: order_params
-          expect(response).to have_http_status(:ok)
-        end
-
-        it_behaves_like 'pagination meta attributes', { page: 1, length: 10, total: 15, total_pages: 2 } do
-          before { get url, headers: unauthenticated_header, params: order_params }
-        end
+      it_behaves_like 'pagination meta attributes', { page: 1, length: 10, total: 15, total_pages: 2 } do
+        before { get url, headers: unauthenticated_header, params: order_params }
       end
+    end
+  end
+
+  context "GET /products/:id" do
+    let(:product) { create(:product) }
+    let(:url) { "/storefront/v1/products/#{product.id}" }
+
+    it "returns requested Product" do
+      get url, headers: unauthenticated_header
+      expected_product = build_detailed_game_product_json(product)
+      expect(body_json['product']).to eq expected_product
+    end
+
+    it "returns success status" do
+      get url, headers: unauthenticated_header
+      expect(response).to have_http_status(:ok)
     end
   end
 
@@ -390,6 +383,20 @@ RSpec.describe "Storefront V1 Home", type: :request do
     json['price'] = product.price.to_f
     json['image_url'] = rails_blob_url(product.image)
     json['categories'] = product.categories.map(&:name)
+    json
+  end
+
+  def build_detailed_game_product_json(product)
+    json = product.as_json(only: %i(id name description status featured))
+    json['price'] = product.price.to_f
+    json['image_url'] = rails_blob_url(product.image)
+    json['productable'] = product.productable_type.underscore
+    json['productable_id'] = product.productable_id
+    json['categories'] = product.categories.as_json
+    json.merge! product.productable.as_json(only: %i(mode release_date developer))
+    json['system_requirement'] = product.productable.system_requirement.as_json
+    json['favorited_count'] = 0
+    json['sells_count'] = 0
     json
   end
 end
