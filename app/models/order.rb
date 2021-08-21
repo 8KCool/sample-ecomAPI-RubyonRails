@@ -8,6 +8,17 @@ class Order < ApplicationRecord
   validates :total_amount, presence: true, numericality: { greater_than: 0 }
   validates :payment_type, presence: true
   validates :installments, presence: true, numericality: { only_integer: true, greater_than: 0 }
+  validates :document, presence: true, cpf_cnpj: true, on: :create
+
+  validates :card_hash, presence: true, if: ->{ credit_card? }, on: :create
+  validates :address, presence: true, if: ->{ credit_card? }, on: :create
+
+  with_options if: ->{ credit_card? }, on: :create do
+    validates :card_hash, presence: true
+    validates :address, presence: true
+    validates_associated :address
+  end
+
 
   enum status: { processing_order: 1, processing_error: 2, waiting_payment: 3,
     payment_accepted: 4, payment_denied: 5, finished: 6 }
@@ -15,6 +26,10 @@ class Order < ApplicationRecord
   enum payment_type: { credit_card: 1, billet: 2 }
 
   DAYS_TO_DUE = 7
+
+  attribute :address
+  attribute :card_hash
+  attribute :document
 
   before_validation :set_default_status, on: :create
 
