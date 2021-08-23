@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       get "home" => "home#index"
       resources :products, only: [:index, :show]
       resources :categories, only: :index
+      resources :checkouts, only: :create
       resources :wish_items, only: [:index, :create, :destroy]
       post "/coupons/:coupon_code/validations", to: "coupon_validations#create"
     end
