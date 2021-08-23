@@ -22,7 +22,7 @@
 </p>
 
 ## Screenshot
-
+![](https://github.com/Thiago-Cardoso/ecommerce-api/blob/master/app/assets/images/ecommerce.gif)
 ## Stack the Project
 
 
