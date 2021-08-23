@@ -2,7 +2,8 @@
 
 <a  href="#">
 
-<img  alt="# Ecommerce"  src="http://localhost:3001/_next/image?url=%2Fassets%2Flogo-games.png&w=256&q=75"  width="50">
+<img  alt="# Ecommerce"  src="https://github.com/Thiago-Cardoso/ecommerce-api/blob/master/app/assets/images/logo-games.png"  width="50">
+
 
 </a>
 
