@@ -1,14 +1,3 @@
-<p  align="center">
-
-<a  href="#">
-
-<img  alt="# Ecommerce"  src="https://github.com/Thiago-Cardoso/ecommerce-api/blob/master/app/assets/images/logo-games.png"  width="50">
-
-
-</a>
-
-</p>
-
 <p  align="center">Ecommerce</p>
 
 <p  align="center">
