@@ -22,12 +22,20 @@ gem 'jbuilder', '~> 2.10.1'
 # Validation
 gem 'cpf_cnpj', '~> 0.5.0'
 
+#Colorize
+gem 'colorize'
+
+
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'pry-byebug'
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'rspec-rails', '~> 4.0.1'
   gem 'shoulda-matchers', '~> 4.0'
+  gem 'database_cleaner'
+  gem "better_errors"
+  gem "binding_of_caller"
 end
 
 group :development do
