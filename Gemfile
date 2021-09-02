@@ -25,6 +25,9 @@ gem 'cpf_cnpj', '~> 0.5.0'
 #Colorize
 gem 'colorize'
 
+# HTTP Request
+gem 'httparty', '~> 0.18.1'
+
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

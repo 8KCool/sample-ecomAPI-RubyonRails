@@ -1,6 +1,9 @@
 class Order < ApplicationRecord
   belongs_to :user
   belongs_to :coupon, optional: true
+  belongs_to :order
+  has_many :credit_card_payments, class_name: "Juno::CreditCardPayment"
+
   has_many :line_items
   has_many :juno_charges, class_name: 'Juno::Charge'
 
