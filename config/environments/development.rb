@@ -56,6 +56,10 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
+  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = { :address => 'mailcatcher', :port => 1025 }
+
   JUNO_AUTH_URL = "https://sandbox.boletobancario.com"
   JUNO_RESOURCE_URL = "https://sandbox.boletobancario.com/api-integration"
 end

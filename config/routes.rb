@@ -1,4 +1,12 @@
+require 'sidekiq/web'
+
+# Configure Sidekiq-specific session middleware
+Sidekiq::Web.use ActionDispatch::Cookies
+Sidekiq::Web.use ActionDispatch::Session::CookieStore, key: "_interslice_session"
+
 Rails.application.routes.draw do
+  mount Sidekiq::Web => '/sidekiq'
+
   mount_devise_token_auth_for 'User', at: 'auth/v1/user'
 
   namespace :admin do
@@ -7,6 +15,7 @@ Rails.application.routes.draw do
       resources :categories
       resources :products
       resources :system_requirements
+      
       resources :coupons
       resources :games, only: [], shallow: true do
         resources :licenses
